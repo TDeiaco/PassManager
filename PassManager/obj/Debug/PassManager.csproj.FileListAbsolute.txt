@@ -1,0 +1,12 @@
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.exe.config
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.exe
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.pdb
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.Splash.resources
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.Properties.Resources.resources
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.csproj.GenerateResource.Cache
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.exe
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.pdb
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.UnlockedForm.resources
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.NewAccount.resources
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.AddPasswordForm.resources
+C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.csprojResolveAssemblyReference.cache
