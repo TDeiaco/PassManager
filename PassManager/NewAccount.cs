@@ -12,6 +12,9 @@ using System.IO;
 
 namespace PassManager
 {
+    //*********************
+    // File formate ideas:
+    //
     public partial class NewAccount : Form
     {
         Safe safe;
@@ -32,6 +35,8 @@ namespace PassManager
 
             safe.EncryptSafe(NewAccountPasswordTextbox.Text.ToString());
             safe.DecryptSafe(NewAccountPasswordTextbox.Text.ToString());
+
+            safe.CreateAccount(NewAccountUsernameTextbox.Text.ToString(), "hello");
 
 
         }

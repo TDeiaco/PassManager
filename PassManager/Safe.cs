@@ -11,6 +11,14 @@ using System.Windows.Forms;
 
 namespace PassManager
 {
+    //****************************************************************
+    //***       File Format Description 
+    //****************************************************************
+    //
+    // File Header:
+    //
+    //
+    // Username
 
     public  class Safe
     {
@@ -40,6 +48,19 @@ namespace PassManager
 
         ~Safe()
         { }
+
+        public void CreateAccount(string username, string password)
+        {
+            
+            FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write);
+            byte[] writeData = System.Text.Encoding.Unicode.GetBytes(username);
+
+           
+            accountFileStream.Write(writeData, 0, writeData.Length);
+
+            accountFileStream.Close();
+        }
+
 
         public void AddPassword(string password)
         {
