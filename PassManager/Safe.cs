@@ -12,16 +12,35 @@ using System.Windows.Forms;
 namespace PassManager
 {
     //****************************************************************
-    //***       File Format Description 
+    //***       Account File Format Description 
     //****************************************************************
     //
     // File Header:
+    //                  accountname:  Account Name: 250 bytes
+    //                  username:  Account username: 250 bytes
+    //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+    //                                NOTE: Will exposing the number of passwords in the list expose 
+    //                                      a vulnerability? If so, encrypt the number of passwords as 
+    //                                      the first value in the bulk list.
+
+    //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+    // File Data:
+    //                  bulkList: Encrypted data with list of null terminated Username/Password
+    //                            pairs.
     //
+    //                  Unencrypted Password List Format:
+    //                      
+    //                          TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
     //
-    // Username
 
     public  class Safe
     {
+        string  m_accountName;
+        string m_username;
+
+        int m_numPasswords;
+
+
         List<string> pwBank;
 
         string mKey = "password";
@@ -36,11 +55,12 @@ namespace PassManager
         public Safe()
         {
             pwBank = new List<string>();
+
         }
+
 
         public Safe(string masterKey) 
         {
-            pwBank = new List<string>();
             mKey = masterKey;
             
 
@@ -49,16 +69,63 @@ namespace PassManager
         ~Safe()
         { }
 
-        public void CreateAccount(string username, string password)
+        public void CreateAccount(string accountName, string username, string password)
         {
+            m_accountName = accountName;
+            m_username = username;
             
+            if(File.Exists(username.ToString() + ".pmf"))
+            {
+                File.Delete(username.ToString() + ".pmf");
+            }
             FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write);
-            byte[] writeData = System.Text.Encoding.Unicode.GetBytes(username);
 
-           
-            accountFileStream.Write(writeData, 0, writeData.Length);
+            //************************************************************************************************************
+            //***       PassManager File (.pmf) Format Description 
+            //************************************************************************************************************
+            //
+            // File Header:
+            //                  accountname:  Account Name: 250 bytes
+            //                  username:  Account username: 250 bytes
+            //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+            //                                numPasswords == 0  //Indicates a new account.
+            //                                NOTE: Will exposing the number of passwords in the list expose 
+            //                                      a vulnerability? If so, encrypt the number of passwords as 
+            //                                      the first value in the bulk list.
+            //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+            // File Data:
+            //                  bulkList: Encrypted data with list of null terminated Username/Password
+            //                            pairs.
+            //
+            //                  Unencrypted Password List Format:
+            //                      
+            //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+            //
+            //
+            //
+            //***********************************************************************************************************
+
+
+            byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
+            byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
+            byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
+            byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
+
+            byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
+
+
+            accountFileStream.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
+            accountFileStream.Write(wDataAccountName, 0, wDataAccountName.Length);
+            accountFileStream.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
+            accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
+            //New account write numPasswords = 0
+            accountFileStream.Write( wZero , 0, wZero.Length);
+
+
 
             accountFileStream.Close();
+
+
         }
 
 

@@ -30,13 +30,15 @@ namespace PassManager
             //filename to access the user account.
 
             
-            safe.AddPassword(NewAccountUsernameTextbox.Text.ToString() +
+         /*   safe.AddPassword(NewAccountUsernameTextbox.Text.ToString() +
                              NewAccountPasswordTextbox.Text.ToString());
 
             safe.EncryptSafe(NewAccountPasswordTextbox.Text.ToString());
-            safe.DecryptSafe(NewAccountPasswordTextbox.Text.ToString());
+            safe.DecryptSafe(NewAccountPasswordTextbox.Text.ToString()); */
 
-            safe.CreateAccount(NewAccountUsernameTextbox.Text.ToString(), "hello");
+            safe.CreateAccount(NewAccountAccountNameTextbox.Text.ToString(),
+                                NewAccountUsernameTextbox.Text.ToString(),
+                                NewAccountPasswordTextbox.Text.ToString());
 
 
         }
