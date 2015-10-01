@@ -69,6 +69,18 @@ namespace PassManager
         ~Safe()
         { }
 
+        public void LoadAccount(string username, string password)
+        {
+            FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.Open, FileAccess.Read);
+
+            byte[] wDataAccountName;
+            byte[] wDataAccountNameLength;
+            byte[] wDataUsername;
+            byte[] wDataUsernameLength;
+
+            accountFileStream.Read(wDataAccountName, 0, 2);
+        }
+
         public void CreateAccount(string accountName, string username, string password)
         {
             m_accountName = accountName;
