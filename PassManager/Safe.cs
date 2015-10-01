@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Diagnostics;
 //using System.Array;
 
 
@@ -33,9 +34,9 @@ namespace PassManager
     //                          TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
     //
 
-    public  class Safe
+    public class Safe
     {
-        string  m_accountName;
+        string m_accountName;
         string m_username;
 
         int m_numPasswords;
@@ -44,7 +45,7 @@ namespace PassManager
         List<string> pwBank;
 
         string mKey = "password";
-        public  string data;
+        public string data;
         string encryptedData;
         string decryptedData;
 
@@ -59,10 +60,10 @@ namespace PassManager
         }
 
 
-        public Safe(string masterKey) 
+        public Safe(string masterKey)
         {
             mKey = masterKey;
-            
+
 
         }
 
@@ -71,73 +72,134 @@ namespace PassManager
 
         public void LoadAccount(string username, string password)
         {
-            FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.Open, FileAccess.Read);
+            //FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.Open, FileAccess.Read);
 
-            byte[] wDataAccountName;
-            byte[] wDataAccountNameLength;
-            byte[] wDataUsername;
-            byte[] wDataUsernameLength;
+            //byte[] wDataAccountName;
+            //byte[] wDataAccountNameLength;
+            //byte[] wDataUsername;
+            //byte[] wDataUsernameLength;
 
-            accountFileStream.Read(wDataAccountName, 0, 2);
+            if (!File.Exists(username.ToString() + ".pmf"))
+            {
+                MessageBox.Show("Account does not exist!", "Warning!");
+                return;
+            }
+
+            //Debug.WriteLine("\n\n"+ username.ToString() + ".pmf");
+
+            byte[] pmf = LoadPMF(username.ToString() + ".pmf");
+
+            Debug.WriteLine(System.Text.Encoding.UTF8.GetString(pmf));
+
+
         }
 
         public void CreateAccount(string accountName, string username, string password)
         {
             m_accountName = accountName;
             m_username = username;
-            
-            if(File.Exists(username.ToString() + ".pmf"))
+
+            if (File.Exists(username.ToString() + ".pmf"))
             {
                 File.Delete(username.ToString() + ".pmf");
             }
-            FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write);
+            using (FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write))
+            {
 
-            //************************************************************************************************************
-            //***       PassManager File (.pmf) Format Description 
-            //************************************************************************************************************
-            //
-            // File Header:
-            //                  accountname:  Account Name: 250 bytes
-            //                  username:  Account username: 250 bytes
-            //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
-            //                                numPasswords == 0  //Indicates a new account.
-            //                                NOTE: Will exposing the number of passwords in the list expose 
-            //                                      a vulnerability? If so, encrypt the number of passwords as 
-            //                                      the first value in the bulk list.
-            //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
-            // File Data:
-            //                  bulkList: Encrypted data with list of null terminated Username/Password
-            //                            pairs.
-            //
-            //                  Unencrypted Password List Format:
-            //                      
-            //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
-            //
-            //
-            //
-            //***********************************************************************************************************
+                //************************************************************************************************************
+                //***       PassManager File (.pmf) Format Description 
+                //************************************************************************************************************
+                //
+                // File Header:
+                //                  accountname:  Account Name: 250 bytes
+                //                  username:  Account username: 250 bytes
+                //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+                //                                numPasswords == 0  //Indicates a new account.
+                //                                NOTE: Will exposing the number of passwords in the list expose 
+                //                                      a vulnerability? If so, encrypt the number of passwords as 
+                //                                      the first value in the bulk list.
+                //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+                // File Data:
+                //                  bulkList: Encrypted data with list of null terminated Username/Password
+                //                            pairs.
+                //
+                //                  Unencrypted Password List Format:
+                //                      
+                //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+                //
+                //
+                //
+                //***********************************************************************************************************
+
+                //Will want to use UNICODE for a more inclusive Username and Password set but for now just basic ASCII
+                //A UNICODE conversion will inset the first character with another 0 due to UNICODE being 16-bit, and 
+                //displaying that will not work being WriteLine will end when it sees the NULL terminator.
+
+                //byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
+                //byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
+                //byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
+                //byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
+
+                //byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
+
+                byte[] wDataAccountName = System.Text.Encoding.ASCII.GetBytes(accountName);
+                byte[] wDataAccountNameLength = System.Text.Encoding.ASCII.GetBytes(accountName.Length.ToString());
+                byte[] wDataUsername = System.Text.Encoding.ASCII.GetBytes(username);
+                byte[] wDataUsernameLength = System.Text.Encoding.ASCII.GetBytes(username.Length.ToString());
+
+                byte[] wZero = System.Text.Encoding.ASCII.GetBytes("00000000");
+
+                accountFileStream.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
+                accountFileStream.Write(wDataAccountName, 0, wDataAccountName.Length);
+                accountFileStream.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
+                accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
+                //New account write numPasswords = 0
+                accountFileStream.Write(wZero, 0, wZero.Length);
+
+                accountFileStream.Close();
+            }
 
 
-            byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
-            byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
-            byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
-            byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
+        }
 
-            byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
+        public byte[] LoadPMF(string filepath)
+        {
+            try
+            {
 
-
-            accountFileStream.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
-            accountFileStream.Write(wDataAccountName, 0, wDataAccountName.Length);
-            accountFileStream.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
-            accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
-            //New account write numPasswords = 0
-            accountFileStream.Write( wZero , 0, wZero.Length);
+                using (FileStream fsSource = new FileStream(filepath,
+                    FileMode.Open, FileAccess.Read))
+                {
+                    Debug.WriteLine("Loading :" + fsSource.Length + " number of bytes from PMF file.");
 
 
+                    // Read the source file into a byte array.
+                    byte[] bytes = new byte[fsSource.Length];
+                    int numBytesToRead = (int)fsSource.Length;
+                    int numBytesRead = 0;
+                    while (numBytesToRead > 0)
+                    {
+                        // Read may return anything from 0 to numBytesToRead.
+                        int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
 
-            accountFileStream.Close();
+                        // Break when the end of the file is reached.
+                        if (n == 0)
+                            break;
 
+                        numBytesRead += n;
+                        numBytesToRead -= n;
+                    }
+                    numBytesToRead = bytes.Length;
 
+                    // Return buffer
+                    return bytes;
+                }
+            }
+            catch (FileNotFoundException ioEx)
+            {
+                Console.WriteLine(ioEx.Message);
+                return null;
+            }
         }
 
 
@@ -187,7 +249,7 @@ namespace PassManager
         {
             //Create hash table with Master key
             //Encrypt hash table \
-            decryptedData  = Decrypt(encryptedData, mKey);
+            decryptedData = Decrypt(encryptedData, mKey);
             MessageBox.Show(decryptedData, "Decrypted Data:");
         }
 
