@@ -36,12 +36,14 @@
             this.NewAccountReenterPasswordTextbox = new System.Windows.Forms.TextBox();
             this.create_button = new System.Windows.Forms.Button();
             this.cancel_button = new System.Windows.Forms.Button();
+            this.NewAccountAccountNameTextbox = new System.Windows.Forms.TextBox();
+            this.NewAccountAccountNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(27, 62);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 0;
@@ -49,7 +51,7 @@
             // 
             // NewAccountUsernameTextbox
             // 
-            this.NewAccountUsernameTextbox.Location = new System.Drawing.Point(13, 30);
+            this.NewAccountUsernameTextbox.Location = new System.Drawing.Point(27, 79);
             this.NewAccountUsernameTextbox.Name = "NewAccountUsernameTextbox";
             this.NewAccountUsernameTextbox.Size = new System.Drawing.Size(221, 20);
             this.NewAccountUsernameTextbox.TabIndex = 1;
@@ -57,7 +59,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 57);
+            this.label2.Location = new System.Drawing.Point(27, 106);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 2;
@@ -65,7 +67,7 @@
             // 
             // NewAccountPasswordTextbox
             // 
-            this.NewAccountPasswordTextbox.Location = new System.Drawing.Point(13, 74);
+            this.NewAccountPasswordTextbox.Location = new System.Drawing.Point(27, 123);
             this.NewAccountPasswordTextbox.Name = "NewAccountPasswordTextbox";
             this.NewAccountPasswordTextbox.Size = new System.Drawing.Size(221, 20);
             this.NewAccountPasswordTextbox.TabIndex = 3;
@@ -73,7 +75,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 101);
+            this.label3.Location = new System.Drawing.Point(27, 150);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(98, 13);
             this.label3.TabIndex = 4;
@@ -81,14 +83,14 @@
             // 
             // NewAccountReenterPasswordTextbox
             // 
-            this.NewAccountReenterPasswordTextbox.Location = new System.Drawing.Point(13, 118);
+            this.NewAccountReenterPasswordTextbox.Location = new System.Drawing.Point(27, 167);
             this.NewAccountReenterPasswordTextbox.Name = "NewAccountReenterPasswordTextbox";
             this.NewAccountReenterPasswordTextbox.Size = new System.Drawing.Size(221, 20);
             this.NewAccountReenterPasswordTextbox.TabIndex = 5;
             // 
             // create_button
             // 
-            this.create_button.Location = new System.Drawing.Point(159, 144);
+            this.create_button.Location = new System.Drawing.Point(173, 193);
             this.create_button.Name = "create_button";
             this.create_button.Size = new System.Drawing.Size(75, 23);
             this.create_button.TabIndex = 6;
@@ -98,18 +100,36 @@
             // 
             // cancel_button
             // 
-            this.cancel_button.Location = new System.Drawing.Point(78, 144);
+            this.cancel_button.Location = new System.Drawing.Point(92, 193);
             this.cancel_button.Name = "cancel_button";
             this.cancel_button.Size = new System.Drawing.Size(75, 23);
             this.cancel_button.TabIndex = 7;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
             // 
+            // NewAccountAccountNameTextbox
+            // 
+            this.NewAccountAccountNameTextbox.Location = new System.Drawing.Point(27, 36);
+            this.NewAccountAccountNameTextbox.Name = "NewAccountAccountNameTextbox";
+            this.NewAccountAccountNameTextbox.Size = new System.Drawing.Size(221, 20);
+            this.NewAccountAccountNameTextbox.TabIndex = 9;
+            // 
+            // NewAccountAccountNameLabel
+            // 
+            this.NewAccountAccountNameLabel.AutoSize = true;
+            this.NewAccountAccountNameLabel.Location = new System.Drawing.Point(27, 19);
+            this.NewAccountAccountNameLabel.Name = "NewAccountAccountNameLabel";
+            this.NewAccountAccountNameLabel.Size = new System.Drawing.Size(78, 13);
+            this.NewAccountAccountNameLabel.TabIndex = 8;
+            this.NewAccountAccountNameLabel.Text = "Account Name";
+            // 
             // NewAccount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(246, 170);
+            this.ClientSize = new System.Drawing.Size(279, 235);
+            this.Controls.Add(this.NewAccountAccountNameTextbox);
+            this.Controls.Add(this.NewAccountAccountNameLabel);
             this.Controls.Add(this.cancel_button);
             this.Controls.Add(this.create_button);
             this.Controls.Add(this.NewAccountReenterPasswordTextbox);
@@ -135,5 +155,7 @@
         private System.Windows.Forms.TextBox NewAccountReenterPasswordTextbox;
         private System.Windows.Forms.Button create_button;
         private System.Windows.Forms.Button cancel_button;
+        private System.Windows.Forms.TextBox NewAccountAccountNameTextbox;
+        private System.Windows.Forms.Label NewAccountAccountNameLabel;
     }
 }
