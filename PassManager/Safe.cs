@@ -38,6 +38,7 @@ namespace PassManager
     {
         string m_accountName;
         string m_username;
+        string m_filepath;
 
         int m_numPasswords;
 
@@ -93,6 +94,10 @@ namespace PassManager
 
 
         }
+
+        public void SaveAccount()
+        { }
+
 
         public void CreateAccount(string accountName, string username, string password)
         {
