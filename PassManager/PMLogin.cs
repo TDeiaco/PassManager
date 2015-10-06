@@ -35,8 +35,11 @@ namespace PassManager
            // safe.AddPassword("fartnuggets");
            // safe.AddPassword("ballsack");
             //safe.AddPassword("Wilzniac");
-            safe.EncryptSafe();
-            safe.DecryptSafe();
+
+
+           // safe.EncryptSafe();
+           // safe.DecryptSafe();
+            safe.LoadAccount(PMSplashUsernameTextbox.Text.ToString(), "blah");
         }
 
     }
