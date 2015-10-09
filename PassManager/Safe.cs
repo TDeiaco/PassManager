@@ -34,13 +34,47 @@ namespace PassManager
     //                          TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
     //
 
+    public class UserPassPair
+    {
+
+        string _username;
+        public string Username
+        {
+            get { return _username; }
+            set { _username = value; }
+        }
+
+        string _password;
+        public string Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
+
+        public UserPassPair()
+        {
+            _username = "Uninitialized";
+            _password = "Uninitialized";
+        }
+
+        public UserPassPair(string username, string password)
+        {
+            _username = username;
+            _password = password;
+        }
+
+    }
+
+
     public class Safe
     {
         string m_accountName;
         string m_username;
-        string m_filepath
+
+        private string m_filepath;
+        public string Filepath
         {
-            get {return m_filepath;}
+            get { return m_filepath; }
             set { m_filepath = value; }
         }
 
@@ -178,6 +212,8 @@ namespace PassManager
                 accountFileStream.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
                 accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
                 //New account write numPasswords = 0
+
+                if(
                 accountFileStream.Write(wZero, 0, wZero.Length);
 
                 accountFileStream.Close();
@@ -227,7 +263,7 @@ namespace PassManager
         }
 
 
-        public void AddPassword(string password)
+        public void AddPassword(string username, string password)
         {
             pwBank.Add(password);
         }
