@@ -81,7 +81,7 @@ namespace PassManager
         int m_numPasswords;
 
 
-        List<string> pwBank;
+        List<UserPassPair> pwBank;
 
         string mKey = "password";
         public string data;
@@ -94,7 +94,7 @@ namespace PassManager
 
         public Safe()
         {
-            pwBank = new List<string>();
+            pwBank = new List<UserPassPair>();
 
         }
 
@@ -137,7 +137,7 @@ namespace PassManager
 
         public void SaveAccount()
         {
-            byte[] accountRaw = LoadPMF(m_filepath);
+          //  byte[] accountRaw = LoadPMF(m_filepath);
 
             //Load account values from raw file data
 
@@ -213,9 +213,16 @@ namespace PassManager
                 accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
                 //New account write numPasswords = 0
 
-                if(
-                accountFileStream.Write(wZero, 0, wZero.Length);
+                if (pwBank.Count == 0)
+                {
+                    accountFileStream.Write(wZero, 0, wZero.Length);
+                    accountFileStream.Close();
+                    return;
+                }
 
+                foreach(UserPassPair pair in pwBank)
+                {
+                    byte[] 
                 accountFileStream.Close();
             }
 
@@ -263,9 +270,9 @@ namespace PassManager
         }
 
 
-        public void AddPassword(string username, string password)
+        public void AddPassword(UserPassPair userpass)
         {
-            pwBank.Add(password);
+            pwBank.Add(userpass);
         }
 
 
@@ -275,17 +282,17 @@ namespace PassManager
         {
             //Create hash table with Master key
             //Encrypt hash table 
-            foreach (string pass in pwBank)
-            {
-                data += pass;
-            }
-            //data = pwBank[0].ToString() + pwBank[1].ToString();
-            MessageBox.Show("Encrypting: \n" + data, "Securing");
-            encryptedData = Encrypt(data, mKey);
-            MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
+            //foreach (string pass in pwBank)
+            //{
+            //    data += pass;
+            //}
+            ////data = pwBank[0].ToString() + pwBank[1].ToString();
+            //MessageBox.Show("Encrypting: \n" + data, "Securing");
+            //encryptedData = Encrypt(data, mKey);
+            //MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
 
-            FileStream fs = new FileStream("cryptoData.txt", FileMode.Create, FileAccess.ReadWrite);
-            fs.Write(Encoding.ASCII.GetBytes(data.ToString()), 0, Encoding.ASCII.GetByteCount(data.ToString()));
+            //FileStream fs = new FileStream("cryptoData.txt", FileMode.Create, FileAccess.ReadWrite);
+            //fs.Write(Encoding.ASCII.GetBytes(data.ToString()), 0, Encoding.ASCII.GetByteCount(data.ToString()));
         }
 
         //Performs encryption on the key array
@@ -294,14 +301,14 @@ namespace PassManager
         {
             //Create hash table with Master key
             //Encrypt hash table 
-            foreach (string pass in pwBank)
-            {
-                data += pass;
-            }
-            //data = pwBank[0].ToString() + pwBank[1].ToString();
-            MessageBox.Show("Encrypting: \n" + data, "Securing");
-            encryptedData = Encrypt(data, password);
-            MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
+            //foreach (string pass in pwBank)
+            //{
+            //    data += pass;
+            //}
+            ////data = pwBank[0].ToString() + pwBank[1].ToString();
+            //MessageBox.Show("Encrypting: \n" + data, "Securing");
+            //encryptedData = Encrypt(data, password);
+            //MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
         }
 
         //Performs encryption on the key array
