@@ -31,15 +31,16 @@ namespace PassManager
 
         private void PMLoginButton_Click(object sender, EventArgs e)
         {
-            //safe = new Safe("boobies1");
-           // safe.AddPassword("fartnuggets");
-           // safe.AddPassword("ballsack");
-            //safe.AddPassword("Wilzniac");
+            safe = new Safe("boobies1");
+            safe.AddPassword("fartnuggets", "1234");
+            safe.AddPassword("ballsack", "1234");
+            safe.AddPassword("Wilzniac", "1234");
 
 
            // safe.EncryptSafe();
            // safe.DecryptSafe();
-            safe.LoadAccount(PMSplashUsernameTextbox.Text.ToString(), "blah");
+            safe.WritePMFFile("Taylor Deiaco", "tayDeiaco");
+            safe.LoadAccount("tayDeiaco", "password");
         }
 
     }

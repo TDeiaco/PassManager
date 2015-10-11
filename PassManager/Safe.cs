@@ -59,6 +59,10 @@ namespace PassManager
 
         public UserPassPair(string username, string password)
         {
+            //if (this == null)
+            //{
+            //    this = new UserPassPair(username, password);
+            //}
             _username = username;
             _password = password;
         }
@@ -101,6 +105,7 @@ namespace PassManager
 
         public Safe(string masterKey)
         {
+            pwBank = new List<UserPassPair>();
             mKey = masterKey;
 
 
@@ -128,7 +133,7 @@ namespace PassManager
 
             m_username = username.ToString() + ".pmf";
 
-            byte[] pmf = LoadPMF(username.ToString() + ".pmf");
+            byte[] pmf = ReadPMFIntoBuffer(username.ToString() + ".pmf");
 
             Debug.WriteLine(System.Text.Encoding.UTF8.GetString(pmf));
 
@@ -137,7 +142,7 @@ namespace PassManager
 
         public void SaveAccount()
         {
-          //  byte[] accountRaw = LoadPMF(m_filepath);
+            //  byte[] accountRaw = LoadPMF(m_filepath);
 
             //Load account values from raw file data
 
@@ -157,7 +162,7 @@ namespace PassManager
         public void WritePMFFile(string accountName, string username)
         {
 
-             if (File.Exists(username.ToString() + ".pmf"))
+            if (File.Exists(username.ToString() + ".pmf"))
             {
                 File.Delete(username.ToString() + ".pmf");
             }
@@ -220,16 +225,74 @@ namespace PassManager
                     return;
                 }
 
-                foreach(UserPassPair pair in pwBank)
+                if (pwBank.Count > 99999999)
                 {
-                    byte[] 
+                    MessageBox.Show("Too many passwords, will only write first 99,999,999 passwords!");
+                }
+
+                //If passwords, write number of passwords 
+                byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(pwBank.Count.ToString("D8"));
+                accountFileStream.Write(numPasswords, 0, numPasswords.Length);
+
+                //Create password list segment
+                //Write all username/password pairs into one buffer, and then encrypt that buffer and 
+                //append the result to the .pmf file.
+                //                  Unencrypted Password List Format:
+                //                      
+                //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+
+                byte[] oneNull = { 0 };
+                byte[] twoNull = { 0, 0 };
+                int mainBufferSize = 0;
+
+                //Calculate mainBuffer size:
+                //size = Sum(Password[].Size) + Sum(Username[].Size)
+                foreach (UserPassPair pair in pwBank)
+                {
+                    mainBufferSize += pair.Username.Length + pair.Password.Length + 3; //3 accounts for NULL delimiters
+                }
+
+                //Create main password/username buffer
+                using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
+                {
+
+                    foreach (UserPassPair pair in pwBank)
+                    {
+                        byte[] wrightUsername = System.Text.Encoding.ASCII.GetBytes(pair.Username);
+                        byte[] wrightPassword = System.Text.Encoding.ASCII.GetBytes(pair.Password);
+
+                        // Write the username 
+                        mainBufferStream.Write(wrightUsername, 0, wrightUsername.Length);
+                        //Insert single NULL delimiter
+                        mainBufferStream.Write(oneNull, 0, 1);
+                        //Write password
+                        mainBufferStream.Write(wrightPassword, 0, wrightPassword.Length);
+                        //Insert double NULL delimiter
+                        mainBufferStream.Write(twoNull, 0, 2);
+                    }
+
+                    // Set the position to the beginning of the stream.
+                    mainBufferStream.Seek(0, SeekOrigin.Begin);
+
+                    //Wright password list memory stream buffer into the mainListBuffer byte array
+                    byte[] mainListBuffer = new byte[mainBufferSize];
+                    mainBufferStream.Read(mainListBuffer, 0, mainBufferSize);
+
+                    //Encrypt main list buffer array
+                    byte[] encryptedList = Encrypt(mainListBuffer, mKey);
+
+                    //Wright encrypted list buffer to the .pmf file
+                    accountFileStream.Write(encryptedList, 0, encryptedList.Length);
+
+                }
+
                 accountFileStream.Close();
             }
 
         }
 
 
-        public byte[] LoadPMF(string filepath)
+        public byte[] ReadPMFIntoBuffer(string filepath)
         {
             try
             {
@@ -269,12 +332,17 @@ namespace PassManager
             }
         }
 
+        public void AddPassword(string username, string password)
+        {
+            pwBank.Add(new UserPassPair(username, password));
+        }
 
         public void AddPassword(UserPassPair userpass)
         {
             pwBank.Add(userpass);
         }
 
+        #region Encryption
 
         //Performs encryption on the key array
         //using "mKey"
@@ -328,6 +396,9 @@ namespace PassManager
             decryptedData = Decrypt(encryptedData, password);
             MessageBox.Show(decryptedData, "Decrypted Data:");
         }
+
+
+
 
         // Encrypt a byte array into a byte array using a key and an IV 
         public static byte[] Encrypt(byte[] clearData, byte[] Key, byte[] IV)
@@ -808,6 +879,7 @@ namespace PassManager
             return buffer;
         }
     }
+        #endregion
 
 }
 
