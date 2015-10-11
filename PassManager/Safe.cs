@@ -38,6 +38,11 @@ namespace PassManager
     {
         string m_accountName;
         string m_username;
+        string m_filepath
+        {
+            get {return m_filepath;}
+            set { m_filepath = value; }
+        }
 
         int m_numPasswords;
 
@@ -87,6 +92,8 @@ namespace PassManager
 
             //Debug.WriteLine("\n\n"+ username.ToString() + ".pmf");
 
+            m_username = username.ToString() + ".pmf";
+
             byte[] pmf = LoadPMF(username.ToString() + ".pmf");
 
             Debug.WriteLine(System.Text.Encoding.UTF8.GetString(pmf));
@@ -94,18 +101,35 @@ namespace PassManager
 
         }
 
+        public void SaveAccount()
+        {
+            byte[] accountRaw = LoadPMF(m_filepath);
+
+            //Load account values from raw file data
+
+
+        }
+
+
         public void CreateAccount(string accountName, string username, string password)
         {
             m_accountName = accountName;
             m_username = username;
 
-            if (File.Exists(username.ToString() + ".pmf"))
+            WritePMFFile(accountName, username);
+
+        }
+
+        public void WritePMFFile(string accountName, string username)
+        {
+
+             if (File.Exists(username.ToString() + ".pmf"))
             {
                 File.Delete(username.ToString() + ".pmf");
             }
             using (FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write))
             {
-
+                m_filepath = username.ToString() + ".pmf";
                 //************************************************************************************************************
                 //***       PassManager File (.pmf) Format Description 
                 //************************************************************************************************************
@@ -159,8 +183,8 @@ namespace PassManager
                 accountFileStream.Close();
             }
 
-
         }
+
 
         public byte[] LoadPMF(string filepath)
         {
