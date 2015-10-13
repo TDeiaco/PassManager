@@ -41,6 +41,7 @@ namespace PassManager
            // safe.DecryptSafe();
             safe.WritePMFFile("Taylor Deiaco", "tayDeiaco");
             safe.LoadAccount("tayDeiaco", "password");
+            safe.LoadPMFFile("tayDeiaco.pmf");
         }
 
     }

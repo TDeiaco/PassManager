@@ -150,6 +150,64 @@ namespace PassManager
         }
 
 
+        public void LoadPMFFile(string filepath)
+        {
+            ////Load entire .pmf file into a byte array buffer
+            //byte[] pmfBuffer = ReadPMFIntoBuffer(filepath);
+
+            ////Analyze .pmf file byte by byte.
+            //foreach(byte b in pmfBuffer)
+            //{
+            //    //************************************************************************************************************
+            //    //***       PassManager File (.pmf) Format Description 
+            //    //************************************************************************************************************
+            //    //
+            //    // File Header:
+            //    //                  accountname:  Account Name: 250 bytes
+            //    //                  username:  Account username: 250 bytes
+            //    //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+            //    //                                numPasswords == 0  //Indicates a new account.
+            //    //                                NOTE: Will exposing the number of passwords in the list expose 
+            //    //                                      a vulnerability? If so, encrypt the number of passwords as 
+            //    //                                      the first value in the bulk list.
+            //    //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+            //    // File Data:
+            //    //                  bulkList: Encrypted data with list of null terminated Username/Password
+            //    //                            pairs.
+            //    //
+            //    //                  Unencrypted Password List Format:
+            //    //                      
+            //    //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+            //    //
+            //    //
+            //    //
+            //    //***********************************************************************************************************
+
+            //    //Check for numbers..
+            //    //if(b >= 48 && b <= 57)
+            //    //{
+            //    //    byte[] numberBuffer  = {0,0,0,0,0,0,0,0};
+            //    //    int count = 8;
+            //    //    numberBuffer[0] = pmfBuffer[b.
+
+            //    //}
+            using (FileStream accountFileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(accountFileStream))
+                {
+                    uint accountNameLength = 0, usernameLength = 0;
+                    accountNameLength = reader.ReadUInt32();
+                    string accountName = reader.ReadString();
+                    usernameLength = reader.ReadUInt32();
+                    string userName = reader.ReadString();
+
+                    MessageBox.Show("Account Name: " + accountName + " and Username: " + userName);
+
+
+
+                }
+            }
+        }
         public void CreateAccount(string accountName, string username, string password)
         {
             m_accountName = accountName;
@@ -168,128 +226,142 @@ namespace PassManager
             }
             using (FileStream accountFileStream = new FileStream(username.ToString() + ".pmf", FileMode.CreateNew, FileAccess.Write))
             {
-                m_filepath = username.ToString() + ".pmf";
-                //************************************************************************************************************
-                //***       PassManager File (.pmf) Format Description 
-                //************************************************************************************************************
-                //
-                // File Header:
-                //                  accountname:  Account Name: 250 bytes
-                //                  username:  Account username: 250 bytes
-                //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
-                //                                numPasswords == 0  //Indicates a new account.
-                //                                NOTE: Will exposing the number of passwords in the list expose 
-                //                                      a vulnerability? If so, encrypt the number of passwords as 
-                //                                      the first value in the bulk list.
-                //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
-                // File Data:
-                //                  bulkList: Encrypted data with list of null terminated Username/Password
-                //                            pairs.
-                //
-                //                  Unencrypted Password List Format:
-                //                      
-                //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
-                //
-                //
-                //
-                //***********************************************************************************************************
-
-                //Will want to use UNICODE for a more inclusive Username and Password set but for now just basic ASCII
-                //A UNICODE conversion will inset the first character with another 0 due to UNICODE being 16-bit, and 
-                //displaying that will not work being WriteLine will end when it sees the NULL terminator.
-
-                //byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
-                //byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
-                //byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
-                //byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
-
-                //byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
-
-                byte[] wDataAccountName = System.Text.Encoding.ASCII.GetBytes(accountName);
-                byte[] wDataAccountNameLength = System.Text.Encoding.ASCII.GetBytes(accountName.Length.ToString());
-                byte[] wDataUsername = System.Text.Encoding.ASCII.GetBytes(username);
-                byte[] wDataUsernameLength = System.Text.Encoding.ASCII.GetBytes(username.Length.ToString());
-
-                byte[] wZero = System.Text.Encoding.ASCII.GetBytes("00000000");
-
-                accountFileStream.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
-                accountFileStream.Write(wDataAccountName, 0, wDataAccountName.Length);
-                accountFileStream.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
-                accountFileStream.Write(wDataUsername, 0, wDataUsername.Length);
-                //New account write numPasswords = 0
-
-                if (pwBank.Count == 0)
+                using (BinaryWriter writer = new BinaryWriter(accountFileStream))
                 {
-                    accountFileStream.Write(wZero, 0, wZero.Length);
-                    accountFileStream.Close();
-                    return;
-                }
+                    m_filepath = username.ToString() + ".pmf";
+                    //************************************************************************************************************
+                    //***       PassManager File (.pmf) Format Description 
+                    //************************************************************************************************************
+                    //
+                    // File Header:
+                    //                  accountname:  Account Name: 250 bytes
+                    //                  username:  Account username: 250 bytes
+                    //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+                    //                                numPasswords == 0  //Indicates a new account.
+                    //                                NOTE: Will exposing the number of passwords in the list expose 
+                    //                                      a vulnerability? If so, encrypt the number of passwords as 
+                    //                                      the first value in the bulk list.
+                    //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+                    // File Data:
+                    //                  bulkList: Encrypted data with list of null terminated Username/Password
+                    //                            pairs.
+                    //
+                    //                  Unencrypted Password List Format:
+                    //                      
+                    //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+                    //
+                    //
+                    //
+                    //***********************************************************************************************************
 
-                if (pwBank.Count > 99999999)
-                {
-                    MessageBox.Show("Too many passwords, will only write first 99,999,999 passwords!");
-                }
+                    //Will want to use UNICODE for a more inclusive Username and Password set but for now just basic ASCII
+                    //A UNICODE conversion will inset the first character with another 0 due to UNICODE being 16-bit, and 
+                    //displaying that will not work being WriteLine will end when it sees the NULL terminator.
 
-                //If passwords, write number of passwords 
-                byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(pwBank.Count.ToString("D8"));
-                accountFileStream.Write(numPasswords, 0, numPasswords.Length);
+                    //byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
+                    //byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
+                    //byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
+                    //byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
 
-                //Create password list segment
-                //Write all username/password pairs into one buffer, and then encrypt that buffer and 
-                //append the result to the .pmf file.
-                //                  Unencrypted Password List Format:
-                //                      
-                //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+                    //byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
 
-                byte[] oneNull = { 0 };
-                byte[] twoNull = { 0, 0 };
-                int mainBufferSize = 0;
+                    byte[] wDataAccountName = System.Text.Encoding.ASCII.GetBytes(accountName);
+                    //   byte[] wDataAccountNameLength = (byte)accountName.Length;//System.Text.Encoding.ASCII.GetBytes(accountName.Length.ToString());
+                    byte[] wDataUsername = System.Text.Encoding.ASCII.GetBytes(username);
+                    //   byte[] wDataUsernameLength = System.Text.Encoding.ASCII.GetBytes(username.Length.ToString());
 
-                //Calculate mainBuffer size:
-                //size = Sum(Password[].Size) + Sum(Username[].Size)
-                foreach (UserPassPair pair in pwBank)
-                {
-                    mainBufferSize += pair.Username.Length + pair.Password.Length + 3; //3 accounts for NULL delimiters
-                }
+                    byte[] wZero = System.Text.Encoding.ASCII.GetBytes("00000000");
 
-                //Create main password/username buffer
-                using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
-                {
 
-                    foreach (UserPassPair pair in pwBank)
+
+                    // writer.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
+                    writer.Write((uint)accountName.Length);
+                    //writer.Write(wDataAccountName, 0, wDataAccountName.Length);
+                    writer.Write(accountName);
+                    // writer.Write(wDataUsernameLength, 0, wDataUsernameLength.Length);
+                    writer.Write((uint)username.Length);
+                    writer.Write(username);
+                    //New account write numPasswords = 0
+
+                    //writer.Close();
+
+                    if (pwBank.Count == 0)
                     {
-                        byte[] wrightUsername = System.Text.Encoding.ASCII.GetBytes(pair.Username);
-                        byte[] wrightPassword = System.Text.Encoding.ASCII.GetBytes(pair.Password);
-
-                        // Write the username 
-                        mainBufferStream.Write(wrightUsername, 0, wrightUsername.Length);
-                        //Insert single NULL delimiter
-                        mainBufferStream.Write(oneNull, 0, 1);
-                        //Write password
-                        mainBufferStream.Write(wrightPassword, 0, wrightPassword.Length);
-                        //Insert double NULL delimiter
-                        mainBufferStream.Write(twoNull, 0, 2);
+                        int zero = 0;
+                        writer.Write(zero);
+                        writer.Close();
+                        return;
                     }
 
-                    // Set the position to the beginning of the stream.
-                    mainBufferStream.Seek(0, SeekOrigin.Begin);
 
-                    //Wright password list memory stream buffer into the mainListBuffer byte array
-                    byte[] mainListBuffer = new byte[mainBufferSize];
-                    mainBufferStream.Read(mainListBuffer, 0, mainBufferSize);
 
-                    //Encrypt main list buffer array
-                    byte[] encryptedList = Encrypt(mainListBuffer, mKey);
 
-                    //Wright encrypted list buffer to the .pmf file
-                    accountFileStream.Write(encryptedList, 0, encryptedList.Length);
 
+                    if (pwBank.Count > 99999999)
+                    {
+                        MessageBox.Show("Too many passwords, will only write first 99,999,999 passwords!");
+                    }
+
+                    //If passwords, write number of passwords 
+                    byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(pwBank.Count.ToString("D8"));
+                    writer.Write(numPasswords, 0, numPasswords.Length);
+
+                    //Create password list segment
+                    //Write all username/password pairs into one buffer, and then encrypt that buffer and 
+                    //append the result to the .pmf file.
+                    //                  Unencrypted Password List Format:
+                    //                      
+                    //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+
+                    byte[] oneNull = { 0 };
+                    byte[] twoNull = { 0, 0 };
+                    int mainBufferSize = 0;
+
+                    //Calculate mainBuffer size:
+                    //size = Sum(Password[].Size) + Sum(Username[].Size)
+                    foreach (UserPassPair pair in pwBank)
+                    {
+                        mainBufferSize += pair.Username.Length + pair.Password.Length + 3; //3 accounts for NULL delimiters
+                    }
+
+                    //Create main password/username buffer
+                    using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
+                    {
+
+                        foreach (UserPassPair pair in pwBank)
+                        {
+                            byte[] writeUsername = System.Text.Encoding.ASCII.GetBytes(pair.Username);
+                            byte[] writePassword = System.Text.Encoding.ASCII.GetBytes(pair.Password);
+
+                            // Write the username 
+                            mainBufferStream.Write(writeUsername, 0, writeUsername.Length);
+                            //Insert single NULL delimiter
+                            mainBufferStream.Write(oneNull, 0, 1);
+                            //Write password
+                            mainBufferStream.Write(writePassword, 0, writePassword.Length);
+                            //Insert double NULL delimiter
+                            mainBufferStream.Write(twoNull, 0, 2);
+                        }
+
+                        // Set the position to the beginning of the stream.
+                        mainBufferStream.Seek(0, SeekOrigin.Begin);
+
+                        //Write password list memory stream buffer into the mainListBuffer byte array
+                        byte[] mainListBuffer = new byte[mainBufferSize];
+                        mainBufferStream.Read(mainListBuffer, 0, mainBufferSize);
+
+                        //Encrypt main list buffer array
+                        byte[] encryptedList = Encrypt(mainListBuffer, mKey);
+
+                        //write encrypted list buffer to the .pmf file
+                        writer.Write(encryptedList, 0, encryptedList.Length);
+
+                    }
                 }
-
-                accountFileStream.Close();
             }
-
         }
+
+
 
 
         public byte[] ReadPMFIntoBuffer(string filepath)
