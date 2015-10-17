@@ -191,6 +191,7 @@ namespace PassManager
             //    //    numberBuffer[0] = pmfBuffer[b.
 
             //    //}
+
             using (FileStream accountFileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(accountFileStream))
@@ -201,8 +202,17 @@ namespace PassManager
                     usernameLength = reader.ReadUInt32();
                     string userName = reader.ReadString();
 
-                    MessageBox.Show("Account Name: " + accountName + " and Username: " + userName);
+                    int passwordCount = reader.ReadInt32();
 
+                    MessageBox.Show("Account Name: " + accountName + " and Username: " + userName + " Password Count: " + passwordCount.ToString());
+
+                    int mainBufferSize = reader.ReadInt32();
+
+                    byte[] encryptedListBuffer = reader.ReadBytes(mainBufferSize);
+
+                    byte[] plainTextPasswordList = Decrypt(encryptedListBuffer, mKey);
+
+                    MessageBox.Show(plainTextPasswordList.ToString());
 
 
                 }
@@ -270,7 +280,7 @@ namespace PassManager
                     byte[] wDataUsername = System.Text.Encoding.ASCII.GetBytes(username);
                     //   byte[] wDataUsernameLength = System.Text.Encoding.ASCII.GetBytes(username.Length.ToString());
 
-                    byte[] wZero = System.Text.Encoding.ASCII.GetBytes("00000000");
+                   // string zero = "00000000";
 
 
 
@@ -293,10 +303,6 @@ namespace PassManager
                         return;
                     }
 
-
-
-
-
                     if (pwBank.Count > 99999999)
                     {
                         MessageBox.Show("Too many passwords, will only write first 99,999,999 passwords!");
@@ -304,7 +310,8 @@ namespace PassManager
 
                     //If passwords, write number of passwords 
                     byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(pwBank.Count.ToString("D8"));
-                    writer.Write(numPasswords, 0, numPasswords.Length);
+                    int passwordCount = pwBank.Count;
+                    writer.Write(passwordCount);
 
                     //Create password list segment
                     //Write all username/password pairs into one buffer, and then encrypt that buffer and 
@@ -323,6 +330,9 @@ namespace PassManager
                     {
                         mainBufferSize += pair.Username.Length + pair.Password.Length + 3; //3 accounts for NULL delimiters
                     }
+
+                    //Now write this buffer size to the file so the reader can use it later
+                    writer.Write(mainBufferSize);
 
                     //Create main password/username buffer
                     using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
