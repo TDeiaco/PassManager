@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.username = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.NewPasswordUsername_textbox = new System.Windows.Forms.TextBox();
             this.password = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.NewPasswordPassword_textbox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -44,12 +44,12 @@
             this.username.TabIndex = 0;
             this.username.Text = "Username";
             // 
-            // textBox1
+            // NewPasswordUsername_textbox
             // 
-            this.textBox1.Location = new System.Drawing.Point(13, 30);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 1;
+            this.NewPasswordUsername_textbox.Location = new System.Drawing.Point(13, 30);
+            this.NewPasswordUsername_textbox.Name = "NewPasswordUsername_textbox";
+            this.NewPasswordUsername_textbox.Size = new System.Drawing.Size(100, 20);
+            this.NewPasswordUsername_textbox.TabIndex = 1;
             // 
             // password
             // 
@@ -60,21 +60,23 @@
             this.password.TabIndex = 2;
             this.password.Text = "Password";
             // 
-            // textBox2
+            // NewPasswordPassword_textbox
             // 
-            this.textBox2.Location = new System.Drawing.Point(119, 30);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(113, 20);
-            this.textBox2.TabIndex = 3;
+            this.NewPasswordPassword_textbox.Location = new System.Drawing.Point(119, 30);
+            this.NewPasswordPassword_textbox.Name = "NewPasswordPassword_textbox";
+            this.NewPasswordPassword_textbox.Size = new System.Drawing.Size(113, 20);
+            this.NewPasswordPassword_textbox.TabIndex = 3;
             // 
             // button1
             // 
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(119, 56);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(113, 23);
             this.button1.TabIndex = 4;
             this.button1.Text = "Add New Password";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // AddPasswordForm
             // 
@@ -82,9 +84,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(245, 91);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.NewPasswordPassword_textbox);
             this.Controls.Add(this.password);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.NewPasswordUsername_textbox);
             this.Controls.Add(this.username);
             this.Name = "AddPasswordForm";
             this.Text = "Add New Password";
@@ -96,9 +98,9 @@
         #endregion
 
         private System.Windows.Forms.Label username;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox NewPasswordUsername_textbox;
         private System.Windows.Forms.Label password;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox NewPasswordPassword_textbox;
         private System.Windows.Forms.Button button1;
     }
 }

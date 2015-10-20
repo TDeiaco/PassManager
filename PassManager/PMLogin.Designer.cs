@@ -37,8 +37,8 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PMSplashUsernameLabel = new System.Windows.Forms.Label();
             this.PMSplashPasswordLabel = new System.Windows.Forms.Label();
-            this.PMSplashUsernameTextbox = new System.Windows.Forms.TextBox();
-            this.PMLoginPasswordTextbox = new System.Windows.Forms.TextBox();
+            this.SplashUsernameTextbox = new System.Windows.Forms.TextBox();
+            this.LoginPasswordTextbox = new System.Windows.Forms.TextBox();
             this.PMLoginButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PMLoginLogoPictureBox)).BeginInit();
             this.PMLoginMenuStrip.SuspendLayout();
@@ -97,40 +97,40 @@
             // PMSplashUsernameLabel
             // 
             this.PMSplashUsernameLabel.AutoSize = true;
-            this.PMSplashUsernameLabel.Font = new System.Drawing.Font("Adobe Fan Heiti Std B", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PMSplashUsernameLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PMSplashUsernameLabel.Location = new System.Drawing.Point(13, 106);
             this.PMSplashUsernameLabel.Name = "PMSplashUsernameLabel";
-            this.PMSplashUsernameLabel.Size = new System.Drawing.Size(69, 16);
+            this.PMSplashUsernameLabel.Size = new System.Drawing.Size(69, 17);
             this.PMSplashUsernameLabel.TabIndex = 2;
             this.PMSplashUsernameLabel.Text = "Username";
             // 
             // PMSplashPasswordLabel
             // 
             this.PMSplashPasswordLabel.AutoSize = true;
-            this.PMSplashPasswordLabel.Font = new System.Drawing.Font("Adobe Fan Heiti Std B", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PMSplashPasswordLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PMSplashPasswordLabel.Location = new System.Drawing.Point(13, 147);
             this.PMSplashPasswordLabel.Name = "PMSplashPasswordLabel";
-            this.PMSplashPasswordLabel.Size = new System.Drawing.Size(66, 16);
+            this.PMSplashPasswordLabel.Size = new System.Drawing.Size(66, 17);
             this.PMSplashPasswordLabel.TabIndex = 3;
             this.PMSplashPasswordLabel.Text = "Password";
             // 
-            // PMSplashUsernameTextbox
+            // SplashUsernameTextbox
             // 
-            this.PMSplashUsernameTextbox.Location = new System.Drawing.Point(15, 122);
-            this.PMSplashUsernameTextbox.Name = "PMSplashUsernameTextbox";
-            this.PMSplashUsernameTextbox.Size = new System.Drawing.Size(153, 20);
-            this.PMSplashUsernameTextbox.TabIndex = 4;
+            this.SplashUsernameTextbox.Location = new System.Drawing.Point(15, 122);
+            this.SplashUsernameTextbox.Name = "SplashUsernameTextbox";
+            this.SplashUsernameTextbox.Size = new System.Drawing.Size(153, 20);
+            this.SplashUsernameTextbox.TabIndex = 4;
             // 
-            // PMLoginPasswordTextbox
+            // LoginPasswordTextbox
             // 
-            this.PMLoginPasswordTextbox.Location = new System.Drawing.Point(16, 164);
-            this.PMLoginPasswordTextbox.Name = "PMLoginPasswordTextbox";
-            this.PMLoginPasswordTextbox.Size = new System.Drawing.Size(152, 20);
-            this.PMLoginPasswordTextbox.TabIndex = 5;
+            this.LoginPasswordTextbox.Location = new System.Drawing.Point(16, 164);
+            this.LoginPasswordTextbox.Name = "LoginPasswordTextbox";
+            this.LoginPasswordTextbox.Size = new System.Drawing.Size(152, 20);
+            this.LoginPasswordTextbox.TabIndex = 5;
             // 
             // PMLoginButton
             // 
-            this.PMLoginButton.Font = new System.Drawing.Font("Adobe Fan Heiti Std B", 9.75F, System.Drawing.FontStyle.Bold);
+            this.PMLoginButton.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PMLoginButton.Location = new System.Drawing.Point(197, 147);
             this.PMLoginButton.Name = "PMLoginButton";
             this.PMLoginButton.Size = new System.Drawing.Size(75, 37);
@@ -145,8 +145,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 197);
             this.Controls.Add(this.PMLoginButton);
-            this.Controls.Add(this.PMLoginPasswordTextbox);
-            this.Controls.Add(this.PMSplashUsernameTextbox);
+            this.Controls.Add(this.LoginPasswordTextbox);
+            this.Controls.Add(this.SplashUsernameTextbox);
             this.Controls.Add(this.PMSplashPasswordLabel);
             this.Controls.Add(this.PMSplashUsernameLabel);
             this.Controls.Add(this.PMLoginLogoPictureBox);
@@ -171,8 +171,8 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.Label PMSplashUsernameLabel;
         private System.Windows.Forms.Label PMSplashPasswordLabel;
-        private System.Windows.Forms.TextBox PMSplashUsernameTextbox;
-        private System.Windows.Forms.TextBox PMLoginPasswordTextbox;
+        private System.Windows.Forms.TextBox SplashUsernameTextbox;
+        private System.Windows.Forms.TextBox LoginPasswordTextbox;
         private System.Windows.Forms.Button PMLoginButton;
         private System.Windows.Forms.ToolStripMenuItem createAccountToolStripMenuItem;
     }

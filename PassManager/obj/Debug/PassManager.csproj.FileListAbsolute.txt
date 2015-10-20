@@ -13,7 +13,6 @@ C:\Users\Deiaco\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.c
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.exe.config
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.exe
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\bin\Debug\PassManager.pdb
-C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.csprojResolveAssemblyReference.cache
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.AddPasswordForm.resources
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.Splash.resources
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.NewAccount.resources
@@ -22,3 +21,4 @@ C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.U
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.csproj.GenerateResource.Cache
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.exe
 C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.pdb
+C:\Users\Taylor\Desktop\Projects\PassManager\PassManager\obj\Debug\PassManager.csprojResolveAssemblyReference.cache

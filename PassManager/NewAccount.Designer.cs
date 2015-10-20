@@ -43,9 +43,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(27, 62);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Username";
             // 
@@ -59,9 +60,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(27, 106);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.Size = new System.Drawing.Size(56, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Password";
             // 
@@ -75,9 +77,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(27, 150);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(98, 13);
+            this.label3.Size = new System.Drawing.Size(103, 13);
             this.label3.TabIndex = 4;
             this.label3.Text = "Re-Enter Password";
             // 
@@ -90,6 +93,7 @@
             // 
             // create_button
             // 
+            this.create_button.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.create_button.Location = new System.Drawing.Point(173, 193);
             this.create_button.Name = "create_button";
             this.create_button.Size = new System.Drawing.Size(75, 23);
@@ -100,6 +104,7 @@
             // 
             // cancel_button
             // 
+            this.cancel_button.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cancel_button.Location = new System.Drawing.Point(92, 193);
             this.cancel_button.Name = "cancel_button";
             this.cancel_button.Size = new System.Drawing.Size(75, 23);
@@ -117,9 +122,10 @@
             // NewAccountAccountNameLabel
             // 
             this.NewAccountAccountNameLabel.AutoSize = true;
+            this.NewAccountAccountNameLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.NewAccountAccountNameLabel.Location = new System.Drawing.Point(27, 19);
             this.NewAccountAccountNameLabel.Name = "NewAccountAccountNameLabel";
-            this.NewAccountAccountNameLabel.Size = new System.Drawing.Size(78, 13);
+            this.NewAccountAccountNameLabel.Size = new System.Drawing.Size(81, 13);
             this.NewAccountAccountNameLabel.TabIndex = 8;
             this.NewAccountAccountNameLabel.Text = "Account Name";
             // 

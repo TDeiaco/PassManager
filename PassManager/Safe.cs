@@ -73,7 +73,18 @@ namespace PassManager
     public class Safe
     {
         string m_accountName;
+        public string AccountName
+        {
+            get { return m_accountName; }
+            set { m_accountName = value; }
+        }
+
         string m_username;
+        public string Username
+        {
+            get { return m_username; }
+            set { m_username = value; }
+        }
 
         private string m_filepath;
         public string Filepath
@@ -83,9 +94,20 @@ namespace PassManager
         }
 
         int m_numPasswords;
+        public int NumPasswords
+        {
+            get { return m_numPasswords; }
+            set { m_numPasswords = value; }
+        }
 
 
-        List<UserPassPair> pwBank;
+        List<UserPassPair> _bank;
+
+        public List<UserPassPair> Bank
+        {
+            get { return _bank; }
+            set { _bank = value; }
+        }
 
         string mKey = "password";
         public string data;
@@ -98,14 +120,14 @@ namespace PassManager
 
         public Safe()
         {
-            pwBank = new List<UserPassPair>();
+            _bank = new List<UserPassPair>();
 
         }
 
 
         public Safe(string masterKey)
         {
-            pwBank = new List<UserPassPair>();
+            _bank = new List<UserPassPair>();
             mKey = masterKey;
 
 
@@ -214,7 +236,7 @@ namespace PassManager
 
                     LoadPasswordsFromBulkList(plainTextPasswordList);
 
-                    foreach (UserPassPair userpass in pwBank)
+                    foreach (UserPassPair userpass in _bank)
                     {
                         MessageBox.Show("Username: " + userpass.Username + "Password: " + userpass.Password);
                     }
@@ -223,37 +245,137 @@ namespace PassManager
             }
         }
 
-        public void LoadPasswordsFromBulkList(byte[] list)
+        public void LoadPMFFile(string filepath, string key)
         {
-            pwBank.Clear();
+            ////Load entire .pmf file into a byte array buffer
+            //byte[] pmfBuffer = ReadPMFIntoBuffer(filepath);
+
+            ////Analyze .pmf file byte by byte.
+            //foreach(byte b in pmfBuffer)
+            //{
+            //    //************************************************************************************************************
+            //    //***       PassManager File (.pmf) Format Description 
+            //    //************************************************************************************************************
+            //    //
+            //    // File Header:
+            //    //                  accountname:  Account Name: 250 bytes
+            //    //                  username:  Account username: 250 bytes
+            //    //                  numPasswords: Number of Passwords: 4 bytes (up to 4 billion passwords muhahaha!)
+            //    //                                numPasswords == 0  //Indicates a new account.
+            //    //                                NOTE: Will exposing the number of passwords in the list expose 
+            //    //                                      a vulnerability? If so, encrypt the number of passwords as 
+            //    //                                      the first value in the bulk list.
+            //    //                  listSize:     Size, in bytes, of Bulk Encrypted Data (not sure neccessary)
+            //    // File Data:
+            //    //                  bulkList: Encrypted data with list of null terminated Username/Password
+            //    //                            pairs.
+            //    //
+            //    //                  Unencrypted Password List Format:
+            //    //                      
+            //    //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+            //    //
+            //    //
+            //    //
+            //    //***********************************************************************************************************
+
+            //    //Check for numbers..
+            //    //if(b >= 48 && b <= 57)
+            //    //{
+            //    //    byte[] numberBuffer  = {0,0,0,0,0,0,0,0};
+            //    //    int count = 8;
+            //    //    numberBuffer[0] = pmfBuffer[b.
+
+            //    //}
+
+            using (FileStream accountFileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(accountFileStream))
+                {
+                    uint accountNameLength = 0, usernameLength = 0;
+                    accountNameLength = reader.ReadUInt32();
+                    string accountName = reader.ReadString();
+                    usernameLength = reader.ReadUInt32();
+                    string userName = reader.ReadString();
+
+                    int passwordCount = reader.ReadInt32();
+
+                    MessageBox.Show("Account Name: " + accountName + " and Username: " + userName + " Password Count: " + passwordCount.ToString());
+
+                    int mainBufferSize = reader.ReadInt32();
+
+                    byte[] encryptedListBuffer = reader.ReadBytes(mainBufferSize);
+
+                    byte[] plainTextPasswordList = Decrypt(encryptedListBuffer, key);
+
+                    //string plainText = "";
+                    //foreach (byte b in plainTextPasswordList)
+                    //{
+                    //    if (b != 0)
+                    //    {
+                    //        plainText += (char)b;
+                    //    }
+                    //}
+
+                    //Debug.WriteLine(plainText);
+
+                    LoadPasswordsFromBulkList(plainTextPasswordList);
+
+                    foreach (UserPassPair userpass in _bank)
+                    {
+                        MessageBox.Show("Username: " + userpass.Username + "Password: " + userpass.Password);
+                    }
+
+                }
+            }
+        }
+
+        public bool LoadPasswordsFromBulkList(byte[] list)
+        {
+            _bank.Clear();
 
             UserPassPair userpass = new UserPassPair();
             string temp = string.Empty;
+            bool confirmed = false;
             bool username = true; //True = Username, False = Password
             foreach (byte b in list)
             {
                 if (b == 0)
                 {
-                    if (username)
+                    if (confirmed)
                     {
-                        userpass.Username = temp;
-                        temp = "";
-                        username = false;
+                        if (username)
+                        {
+                            userpass.Username = temp;
+                            temp = "";
+                            username = false;
+                        }
+                        else
+                        {
+                            userpass.Password = temp;
+                            temp = "";
+                            _bank.Add(userpass);
+                            username = true;
+                        }
                     }
                     else
                     {
-                        userpass.Password = temp;
+                        //If decryption confimartion fails, return false
+                        if (temp != Properties.Resources.DECRYPTION_CONFIRMED)
+                        {
+                            return false;
+                        }
+                        //If decryption confirmation succeeds, continue loading passwords
+                        confirmed = true;
                         temp = "";
-                        pwBank.Add(userpass);
-                        username = true;
                     }
                 }
-                if (b != 0)
+                else
                 {
                     temp += (char)b;
                 }
 
             }
+            return true;
         }
 
         public void CreateAccount(string accountName, string username, string password)
@@ -296,30 +418,11 @@ namespace PassManager
                     //
                     //                  Unencrypted Password List Format:
                     //                      
-                    //                  TaylorDeiaco [null] 27 [null]JeffFoxworth [null] bluecollar1234 [null]
+                    //                  <Confirmation String> [null]TaylorDeiaco [null] 27 [null]JeffFoxworth [null] bluecollar1234 [null]
                     //
                     //
                     //
                     //***********************************************************************************************************
-
-                    //Will want to use UNICODE for a more inclusive Username and Password set but for now just basic ASCII
-                    //A UNICODE conversion will inset the first character with another 0 due to UNICODE being 16-bit, and 
-                    //displaying that will not work being WriteLine will end when it sees the NULL terminator.
-
-                    //byte[] wDataAccountName = System.Text.Encoding.Unicode.GetBytes(accountName);
-                    //byte[] wDataAccountNameLength = System.Text.Encoding.Unicode.GetBytes(accountName.Length.ToString());
-                    //byte[] wDataUsername = System.Text.Encoding.Unicode.GetBytes(username);
-                    //byte[] wDataUsernameLength = System.Text.Encoding.Unicode.GetBytes(username.Length.ToString());
-
-                    //byte[] wZero = System.Text.Encoding.Unicode.GetBytes("00000000");
-
-                    byte[] wDataAccountName = System.Text.Encoding.ASCII.GetBytes(accountName);
-                    //   byte[] wDataAccountNameLength = (byte)accountName.Length;//System.Text.Encoding.ASCII.GetBytes(accountName.Length.ToString());
-                    byte[] wDataUsername = System.Text.Encoding.ASCII.GetBytes(username);
-                    //   byte[] wDataUsernameLength = System.Text.Encoding.ASCII.GetBytes(username.Length.ToString());
-
-                   // string zero = "00000000";
-
 
 
                     // writer.Write(wDataAccountNameLength, 0, wDataAccountNameLength.Length);
@@ -333,7 +436,7 @@ namespace PassManager
 
                     //writer.Close();
 
-                    if (pwBank.Count == 0)
+                    if (_bank.Count == 0)
                     {
                         int zero = 0;
                         writer.Write(zero);
@@ -341,14 +444,14 @@ namespace PassManager
                         return;
                     }
 
-                    if (pwBank.Count > 99999999)
+                    if (_bank.Count > 99999999)
                     {
                         MessageBox.Show("Too many passwords, will only write first 99,999,999 passwords!");
                     }
 
                     //If passwords, write number of passwords 
-                    byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(pwBank.Count.ToString("D8"));
-                    int passwordCount = pwBank.Count;
+                    byte[] numPasswords = System.Text.Encoding.ASCII.GetBytes(_bank.Count.ToString("D8"));
+                    int passwordCount = _bank.Count;
                     writer.Write(passwordCount);
 
                     //Create password list segment
@@ -364,16 +467,23 @@ namespace PassManager
 
                     //Calculate mainBuffer size:
                     //size = Sum(Password[].Size) + Sum(Username[].Size)
-                    foreach (UserPassPair pair in pwBank)
+                    foreach (UserPassPair pair in _bank)
                     {
                         mainBufferSize += pair.Username.Length + pair.Password.Length + 2; //2 accounts for NULL delimiters
                     }
+                    mainBufferSize += Properties.Resources.DECRYPTION_CONFIRMED.Length;
 
                     //Create main password/username buffer
                     using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
                     {
+                        //First write the confimation string which is used to verify, 
+                        //the list was successfully decrypted
+                        byte[] confirmation = System.Text.Encoding.ASCII.GetBytes(Properties.Resources.DECRYPTION_CONFIRMED);
+                        mainBufferStream.Write(confirmation, 0, confirmation.Length);
+                        //Insert single NULL delimiter
+                        mainBufferStream.Write(oneNull, 0, 1);
 
-                        foreach (UserPassPair pair in pwBank)
+                        foreach (UserPassPair pair in _bank)
                         {
                             byte[] writeUsername = System.Text.Encoding.ASCII.GetBytes(pair.Username);
                             byte[] writePassword = System.Text.Encoding.ASCII.GetBytes(pair.Password);
@@ -407,7 +517,7 @@ namespace PassManager
 
                 }
             }
-            
+
 
         }
 
@@ -453,12 +563,12 @@ namespace PassManager
 
         public void AddPassword(string username, string password)
         {
-            pwBank.Add(new UserPassPair(username, password));
+            _bank.Add(new UserPassPair(username, password));
         }
 
         public void AddPassword(UserPassPair userpass)
         {
-            pwBank.Add(userpass);
+            _bank.Add(userpass);
         }
 
         #region Encryption
@@ -469,11 +579,11 @@ namespace PassManager
         {
             //Create hash table with Master key
             //Encrypt hash table 
-            //foreach (string pass in pwBank)
+            //foreach (string pass in _bank)
             //{
             //    data += pass;
             //}
-            ////data = pwBank[0].ToString() + pwBank[1].ToString();
+            ////data = _bank[0].ToString() + _bank[1].ToString();
             //MessageBox.Show("Encrypting: \n" + data, "Securing");
             //encryptedData = Encrypt(data, mKey);
             //MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
@@ -488,11 +598,11 @@ namespace PassManager
         {
             //Create hash table with Master key
             //Encrypt hash table 
-            //foreach (string pass in pwBank)
+            //foreach (string pass in _bank)
             //{
             //    data += pass;
             //}
-            ////data = pwBank[0].ToString() + pwBank[1].ToString();
+            ////data = _bank[0].ToString() + _bank[1].ToString();
             //MessageBox.Show("Encrypting: \n" + data, "Securing");
             //encryptedData = Encrypt(data, password);
             //MessageBox.Show("Encrypted: \n" + encryptedData, "Securing");
