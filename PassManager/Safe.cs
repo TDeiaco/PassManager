@@ -212,20 +212,50 @@ namespace PassManager
 
                     byte[] plainTextPasswordList = Decrypt(encryptedListBuffer, mKey);
 
-                    string plain = "";
-                    foreach (byte b in plainTextPasswordList)
-                    {
-                        if (b != 0)
-                        {
-                            plain += (char)b;
-                        }
-                    }
+                    LoadPasswordsFromBulkList(plainTextPasswordList);
 
-                    MessageBox.Show(plain);
+                    foreach (UserPassPair userpass in pwBank)
+                    {
+                        MessageBox.Show("Username: " + userpass.Username + "Password: " + userpass.Password);
+                    }
 
                 }
             }
         }
+
+        public void LoadPasswordsFromBulkList(byte[] list)
+        {
+            pwBank.Clear();
+
+            UserPassPair userpass = new UserPassPair();
+            string temp = string.Empty;
+            bool username = true; //True = Username, False = Password
+            foreach (byte b in list)
+            {
+                if (b == 0)
+                {
+                    if (username)
+                    {
+                        userpass.Username = temp;
+                        temp = "";
+                        username = false;
+                    }
+                    else
+                    {
+                        userpass.Password = temp;
+                        temp = "";
+                        pwBank.Add(userpass);
+                        username = true;
+                    }
+                }
+                if (b != 0)
+                {
+                    temp += (char)b;
+                }
+
+            }
+        }
+
         public void CreateAccount(string accountName, string username, string password)
         {
             m_accountName = accountName;
@@ -266,7 +296,7 @@ namespace PassManager
                     //
                     //                  Unencrypted Password List Format:
                     //                      
-                    //                  TaylorDeiaco [null] 27 [null][null] JeffFoxworth [null] bluecollar1234 [null][null]
+                    //                  TaylorDeiaco [null] 27 [null]JeffFoxworth [null] bluecollar1234 [null]
                     //
                     //
                     //
@@ -336,7 +366,7 @@ namespace PassManager
                     //size = Sum(Password[].Size) + Sum(Username[].Size)
                     foreach (UserPassPair pair in pwBank)
                     {
-                        mainBufferSize += pair.Username.Length + pair.Password.Length +3; //3 accounts for NULL delimiters
+                        mainBufferSize += pair.Username.Length + pair.Password.Length + 2; //2 accounts for NULL delimiters
                     }
 
                     //Create main password/username buffer
@@ -355,7 +385,7 @@ namespace PassManager
                             //Write password
                             mainBufferStream.Write(writePassword, 0, writePassword.Length);
                             //Insert double NULL delimiter
-                            mainBufferStream.Write(twoNull, 0, 2);
+                            mainBufferStream.Write(oneNull, 0, 1);
                         }
 
                         // Set the position to the beginning of the stream.
