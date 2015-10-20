@@ -212,8 +212,16 @@ namespace PassManager
 
                     byte[] plainTextPasswordList = Decrypt(encryptedListBuffer, mKey);
 
-                    MessageBox.Show(plainTextPasswordList.ToString());
+                    string plain = "";
+                    foreach (byte b in plainTextPasswordList)
+                    {
+                        if (b != 0)
+                        {
+                            plain += (char)b;
+                        }
+                    }
 
+                    MessageBox.Show(plain);
 
                 }
             }
@@ -328,11 +336,8 @@ namespace PassManager
                     //size = Sum(Password[].Size) + Sum(Username[].Size)
                     foreach (UserPassPair pair in pwBank)
                     {
-                        mainBufferSize += pair.Username.Length + pair.Password.Length + 3; //3 accounts for NULL delimiters
+                        mainBufferSize += pair.Username.Length + pair.Password.Length +3; //3 accounts for NULL delimiters
                     }
-
-                    //Now write this buffer size to the file so the reader can use it later
-                    writer.Write(mainBufferSize);
 
                     //Create main password/username buffer
                     using (MemoryStream mainBufferStream = new MemoryStream(mainBufferSize))
@@ -363,16 +368,18 @@ namespace PassManager
                         //Encrypt main list buffer array
                         byte[] encryptedList = Encrypt(mainListBuffer, mKey);
 
+                        //Write encrypted buffer list size
+                        writer.Write(encryptedList.Length);
                         //write encrypted list buffer to the .pmf file
                         writer.Write(encryptedList, 0, encryptedList.Length);
 
                     }
+
                 }
             }
+            
+
         }
-
-
-
 
         public byte[] ReadPMFIntoBuffer(string filepath)
         {
@@ -478,9 +485,6 @@ namespace PassManager
             decryptedData = Decrypt(encryptedData, password);
             MessageBox.Show(decryptedData, "Decrypted Data:");
         }
-
-
-
 
         // Encrypt a byte array into a byte array using a key and an IV 
         public static byte[] Encrypt(byte[] clearData, byte[] Key, byte[] IV)
